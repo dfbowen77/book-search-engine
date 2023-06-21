@@ -2,7 +2,7 @@ const { AuthenticationError } = require('apollo-server-express');
 const { User } = require("../models");
 const { signToken } = require("../utils/auth");
 
-const resolvers {
+const resolvers = {
     Query: {
         // Get the current user by their id and populate their saved books
         me: async (parent, args, context) => {
@@ -14,7 +14,7 @@ const resolvers {
     },
       Mutation: {
         // Create a new user
-        newUser: async (parent, { username, email, password}, context) => {
+        addUser: async (parent, { username, email, password}, context) => {
             const user = await User.create({username, email, password})
             const token = signToken(user)
             return { token, user }
@@ -36,6 +36,7 @@ const resolvers {
             const token = signToken(user);
             return { token, user };
         },
+        // save a book for future reference
         saveBook: async (parent, {input}, context) => {
           if(context.user) {
             const saveUserBook = await User.findByIdAndUpdate(
@@ -47,7 +48,19 @@ const resolvers {
           }  
           throw new AuthenticationError('Please login to save a book!')
         },
-        
+        // remove a book from saved books list
+        removeBook: async (parent, { bookId }, context) => {
+            if (context.user) {
+                const updateBook = await User.findOneAndUpdate(
+                    {_id: context.user._id},
+                    {$pull: { savedBooks: { bookId } } },
+                    {new: true}
+                )
+                return updateBook
+            }
+            throw new AuthenticationError('Please login to remove a book')
+        }
+
     },
 };
 
