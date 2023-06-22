@@ -20,7 +20,7 @@ import { GET_ME } from '../utils/queries';
 
 
 const SavedBooks = () => {
-  const { loading, data} = useQuery(GET_ME)
+  const { loading, data, refetch} = useQuery(GET_ME)
   const myBooks = data?.me?.savedBooks || []
 
 const [removeBook, { error }] = useMutation(REMOVE_BOOK)
@@ -37,12 +37,7 @@ const [removeBook, { error }] = useMutation(REMOVE_BOOK)
     try {
       const response = await removeBook(bookId, token);
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const updatedUser = await response.json();
-      setUserData(updatedUser);
+      refetch()
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
