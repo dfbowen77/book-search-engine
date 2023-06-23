@@ -7,7 +7,6 @@ import {
   Col
 } from 'react-bootstrap';
 
-import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
@@ -35,10 +34,12 @@ const [removeBook, { error }] = useMutation(REMOVE_BOOK)
     }
 
     try {
-      const response = await removeBook(bookId, token);
-
+      await removeBook({
+        variables: { bookId }  
+      })
+      // refetch the updated savedBooks list 
       refetch()
-      // upon success, remove book's id from localStorage
+      //remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
       console.error(err);
