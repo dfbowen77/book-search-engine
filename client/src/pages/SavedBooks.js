@@ -61,11 +61,11 @@ const [removeBook, { error }] = useMutation(REMOVE_BOOK)
       <Container>
         <h2 className='pt-5'>
           {myBooks.length
-            ? `Viewing ${myBooks.length.length} saved ${myBooks.length.length === 1 ? 'book' : 'books'}:`
+            ? `Viewing ${myBooks.length} saved ${myBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <Row>
-          {myBooks.lengths.map((book) => {
+          {myBooks.map((book) => {
             return (
               <Col md="4">
                 <Card key={book.bookId} border='dark'>
